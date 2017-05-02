@@ -125,7 +125,7 @@ public class UserController extends BaseController{
                 Page<User> all = userService.findUserList(pageable);
                 return success(all);
             }
-            return error("没有权限");
+            return error("该用户没有权限");
         }catch (Exception e){
             logger.error("未知错误",e);
             return error("未知错误");
