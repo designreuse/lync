@@ -2,7 +2,9 @@ package com.lync.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lync.common.base.BaseController;
+import com.lync.common.vo.ShiroUser;
 import com.lync.core.constant.Const;
+import com.lync.core.shiro.ShiroKit;
 import com.lync.core.toolbox.kit.JsonKit;
 import com.lync.core.toolbox.result.Result;
 import com.lync.domain.primary.Role;
@@ -12,6 +14,10 @@ import com.lync.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -98,7 +104,33 @@ public class UserController extends BaseController{
     }
 
 
-
+    /*用户列表*/
+    @GetMapping("/user/userlist")
+    public Result userlist(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                          @RequestParam(value = "size", defaultValue = "30") Integer size) {
+        try {
+            ShiroUser user = ShiroKit.getUser();
+            List<Role> roleList = user.getRoleList();
+            boolean flag=false;
+            for(Role r:roleList){
+                String rolename = r.getRolename();
+                if("admin".equalsIgnoreCase(rolename)||"qa".equalsIgnoreCase(rolename)){
+                    flag=true;
+                }
+            }
+            Sort sort = new Sort(Sort.Direction.DESC, "id");
+            Pageable pageable = new PageRequest(page-1, size, sort);
+            if(flag){
+                //查询所有
+                Page<User> all = userService.findUserList(pageable);
+                return success(all);
+            }
+            return error("没有权限");
+        }catch (Exception e){
+            logger.error("未知错误",e);
+            return error("未知错误");
+        }
+    }
 
 
 }

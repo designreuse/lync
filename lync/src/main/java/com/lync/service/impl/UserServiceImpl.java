@@ -1,15 +1,18 @@
 package com.lync.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lync.core.constant.Const;
 import com.lync.domain.primary.User;
 import com.lync.repository.primary.UserRepository;
 import com.lync.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,12 +34,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save( user )!=null;
     }
 
-
-    @Override
-    public List<User> findAll(Sort sort) {
-        return userRepository.findAll(sort);
-    }
-
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsernameAndStatu( username,1);
@@ -52,10 +49,28 @@ public class UserServiceImpl implements UserService {
         return userRepository.addUserRole(user_id,role_id)>0;
     }
 
-
     @Override
-    public List<User> findByUsernameAndPassword(String username, String password) {
-        return userRepository.findByUsernameAndPassword( username,password );
+    public Page<User> findUserList(Pageable pageable) {
+        int pageNumber = pageable.getPageNumber();
+        int pageSize = pageable.getPageSize();
+        int offset = pageable.getOffset();
+        Integer index=offset;
+        Integer end=pageSize;
+        if(offset>0){
+            index=offset;
+        }
+        ArrayList<Object> list = new ArrayList<>();
+        List<User> userList = userRepository.findUserList(index,end);
+        for(User u:userList){
+            JSONObject userinfo = new JSONObject();
+            userinfo.put("username",u.getUsername());
+            userinfo.put("statu",u.getStatu());
+            userinfo.put("roles",u.getRolesName());
+            userinfo.put("create_time",u.getCreateTime());
+            list.add(userinfo);
+        }
+        int total = userRepository.findUserListTotal();
+        return new PageImpl(list,pageable,total);
     }
 
 }

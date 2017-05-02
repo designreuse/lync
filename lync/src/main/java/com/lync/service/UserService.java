@@ -1,7 +1,8 @@
 package com.lync.service;
 
 import com.lync.domain.primary.User;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +16,5 @@ public interface UserService {
     User findByUsername(String username);
     boolean updateUserRole(Long role_id,Long user_id);
     boolean addUserRole(Long user_id,Long role_id);
-    List<User> findByUsernameAndPassword(String username,String password);
-    List<User> findAll(Sort sort);
+    Page<User> findUserList(Pageable pageable);
  }

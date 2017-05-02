@@ -17,7 +17,14 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     @Modifying @Query(value = "update t_user u set u.statu = 0,u.modify_time =?1 where u.id = ?2",nativeQuery=true)
     int deleteUserById(Date modifyTime, Long id);
-    List<User> findByUsernameAndPassword(String username,String password);
+
+//    @Query(value = "select u.id,u.username,u.create_time,u.modify_time from t_user u where u.statu !=0 ORDER BY u.id desc limit ?1,?2",nativeQuery=true)
+    @Query(value = "select * from t_user u where u.statu !=0 ORDER BY u.id desc limit ?1,?2",nativeQuery = true)
+    List<User> findUserList(Integer index, Integer end);
+
+    @Query(value = "select count(id) from t_user u where u.statu !=0 ORDER BY u.id desc",nativeQuery=true)
+    int findUserListTotal();
+
     User findByUsernameAndStatu(String username,int statu);
     @Modifying @Query(value = "update t_user_role set role_id=?1 where user_id=?2",nativeQuery = true)
     int updateUserRole(Long role_id,Long user_id);
