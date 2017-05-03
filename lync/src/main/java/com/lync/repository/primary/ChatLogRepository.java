@@ -18,5 +18,4 @@ public interface ChatLogRepository extends JpaRepository<Chatlog,Long> {
 
     @Query(value = "select count(id) from t_chatlog t where instr(CONCAT(t.`to`,','),?1)>0 ",nativeQuery = true)
     int findChatLogListTotal(String username);
-
 }
