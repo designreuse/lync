@@ -24,7 +24,7 @@ public class ChatLogController extends BaseController{
     private static final Logger logger = LoggerFactory.getLogger(ChatLogController.class);
     @Autowired
     private ChatLogService chatLogService;
-     /*会话展示列表*/
+     //会话展示列表
     @GetMapping("/user/chatlog")
     public Result chatlog(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                  @RequestParam(value = "size", defaultValue = "30") Integer size) {
