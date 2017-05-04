@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by breeze on 2017/3/6.
+ * testchage
  w*/
 @Repository
 public interface ChatLogRepository extends JpaRepository<Chatlog,Long> {
