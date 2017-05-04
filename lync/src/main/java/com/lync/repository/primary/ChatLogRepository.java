@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Created by breeze on 2017/3/6.
- */
+ w*/
 @Repository
 public interface ChatLogRepository extends JpaRepository<Chatlog,Long> {
     @Query(value = "select * from t_chatlog t where instr(CONCAT(t.`to`,','),?1)>0  order by time desc limit ?2,?3",nativeQuery = true)
